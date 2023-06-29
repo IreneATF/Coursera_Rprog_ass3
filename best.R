@@ -13,32 +13,50 @@ best <- function(state, outcome) {
       valid.state <- state == names(by.state)
       
       if(!any(valid.state == TRUE)) {
-            stop("in best('",state,"', '",outcome,"') : invalid state")
-      }else if(outcome != "heart attack" || "heart failure" || "pneumonia") {
-            stop("in best('",state,"', '",outcome,"') : invalid outcome")
+            stop("invalid state")
+      }else if(outcome != "heart attack" && outcome != "heart failure" && outcome != "pneumonia") {
+            stop("invalid outcome")
       }
       
       ## Return hospital name in that state with lowest 30-day death
       
       state.data <- data.frame(by.state[state])
       
-      if(outcome == "heart attack") {
-            outcome.state <- state.data[,c(2,11)]
+      if(outcome == "heart attack") {                   ## Creating data frame only with wanted 
+            outcome.state <- state.data[,c(2,11)]       ## outcome and hospital names in state
       }else if(outcome == "heart failure") {
             outcome.state <- state.data[,c(2,17)]
       }else if(outcome == "pneumonia") {
             outcome.state <- state.data[,c(2,23)]
       }
       
-      bad <- outcome.state[,2] != "Not Available"
-      outcome.state.clean <- outcome.state[c(outcome.state[!bad]),]
-      outcome.ordered <- outcome.state.clean[order(outcome.state.clean$TX.Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack,decreasing = FALSE),]
-      outcome.best <- outcome.ordered[,1]
+      ## Removing hospitals without available data from calculations
+      bad <- c(outcome.state[,2]) != "Not Available"    
+      outcome.clean <- outcome.state[bad,]
+      colnames(outcome.clean) <- c("Hospital.names", "Mortality.rate")
+      outcome.clean <- transform(outcome.clean, Mortality.rate = as.numeric(Mortality.rate))
+      
+      ## ordering by rate and alphabetical order 
+      outcome.ordered <- outcome.clean[order(outcome.clean$Mortality.rate, outcome.clean$Hospital.names, decreasing = FALSE),]  
+      
+      outcome.best <- outcome.ordered[1,1]
       outcome.best 
       
-      ## rate
 }
 
 setwd("C:/Users/irene/Documents/Lifelong learning/Learning R/R Learning Coursera/Coursera_Rprog_ass3/Coursera_Rprog_ass3")
 source("best.R")
+
+## Test 
+best("TX", "heart attack")
+
+best("TX", "heart failure")
+
+best("MD", "heart attack")
+
+best("MD", "pneumonia")
+
+best("BB", "heart attack")
+
+best("NY", "hert attack")
 
