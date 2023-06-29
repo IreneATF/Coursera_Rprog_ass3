@@ -38,11 +38,12 @@ rankhospital <- function(state, outcome, num = "best") {
       
       ## ordering by rate and alphabetical order 
       outcome.ordered <- outcome.clean[order(outcome.clean$Mortality.rate, outcome.clean$Hospital.names, decreasing = FALSE),]  
+      n.obs <- dim(outcome.ordered)[1]
       
       ## ranking
       if (num == "best") {num <- 1
-      }else if (num == "worst") {num <- nrow(outcome.ordered)
-      }else if (num > nrow(outcome.ordered)) {return(NA)}
+      }else if (num == "worst") {num <- n.obs
+      }else if (num > n.obs) {return(NA)}
       
       outcome.rank <- outcome.ordered[num,1]
       outcome.rank 
@@ -59,3 +60,4 @@ rankhospital("TX", "heart failure", 4)
 rankhospital("MD", "heart attack", "worst")
 
 rankhospital("MN", "heart attack", 5000)
+
