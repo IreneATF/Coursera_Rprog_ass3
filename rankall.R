@@ -1,4 +1,4 @@
-## 3. RANKING HOSPITALS IN ALL STATE
+## 4. RANKING HOSPITALS IN ALL STATE
 
 rankall <- function(outcome, num = "best") {
       ## Read outcome data
